@@ -1,13 +1,14 @@
 package il.ac.huji.todolist;
 
+import java.util.Date;
+
 public class TodoItem {
 
-	public TodoItem(String item, long date) {
-		this.item = item;
-		this.date = date;
+	public TodoItem(String title, Date dueDate) {
+		this.title = title;
+		this.dueDate = dueDate;
 	}
 	
-	public String item;
-	public long date;
-	
+	public String title;
+	public Date dueDate;
 }

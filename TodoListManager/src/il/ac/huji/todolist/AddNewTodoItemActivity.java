@@ -1,7 +1,6 @@
 package il.ac.huji.todolist;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,6 +16,7 @@ public class AddNewTodoItemActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.addnewtodoitem_activity);
+		setTitle("Add New Item");
 		
 		findViewById(R.id.btnCancel).setOnClickListener(new OnClickListener() {
 			public void onClick(View v){
@@ -40,8 +40,8 @@ public class AddNewTodoItemActivity extends Activity {
 				else 
 				{
 					Intent resultIntent = new Intent();
-					resultIntent.putExtra("itemName", itemName);
-					resultIntent.putExtra("date", calendar.getTimeInMillis());
+					resultIntent.putExtra("title", itemName);
+					resultIntent.putExtra("dueDate", calendar.getTime());
 					setResult(RESULT_OK, resultIntent);
 					finish();
 				}

@@ -1,6 +1,7 @@
 package il.ac.huji.todolist;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -10,7 +11,6 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import il.ac.huji.todolist.AddNewTodoItemActivity;
-//import il.ac.huji.todolist.AlternatingRowsAdapter;
 
 public class TodoListManagerActivity extends Activity 
 {
@@ -44,8 +44,8 @@ public class TodoListManagerActivity extends Activity
 	
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     	if (requestCode == 1337 && resultCode == RESULT_OK) {
-    		String itemName = data.getStringExtra("itemName");
-    		long date = data.getLongExtra("date", -1);
+    		String itemName = data.getStringExtra("title");
+    		Date date = (Date)data.getSerializableExtra("dueDate");
     		adapter.add(new TodoItem(itemName, date));
     	}
     }
