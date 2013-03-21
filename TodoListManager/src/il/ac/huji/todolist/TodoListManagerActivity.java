@@ -3,21 +3,28 @@ package il.ac.huji.todolist;
 import java.util.ArrayList;
 import java.util.Date;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import il.ac.huji.todolist.AddNewTodoItemActivity;
 
 public class TodoListManagerActivity extends Activity 
 {
 	ListView list;
-//	AlternatingRowsAdapter arrAdapt;
 	ArrayList<TodoItem> entries;
 	private ArrayAdapter<TodoItem> adapter;
+	private int callPos = 1;
+	final static String callTitle = "Call ";
+	final static private String callForIntent = "tel:";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -27,12 +34,42 @@ public class TodoListManagerActivity extends Activity
 		entries = new ArrayList<TodoItem>();
 		adapter = new TodoItemsDisplayAdapter(this, entries);
 		
-		list = (ListView)findViewById(R.id.lstTodoItems);  
-		//list.setAdapter(arrAdapt);
-		//arrAdapt = new AlternatingRowsAdapter(this, android.R.layout.simple_list_item_1, entries);
-		//arrAdapt.setNotifyOnChange(true);
+		list = (ListView)findViewById(R.id.lstTodoItems);
 		list.setAdapter(adapter);
         registerForContextMenu(list);
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		getMenuInflater().inflate(R.menu.contextmenu, menu);
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo)menuInfo;
+		TodoItem t = (adapter.getItem(info.position));
+		menu.setHeaderTitle(t.title);
+		if (t.title.contains(callTitle))
+			menu.getItem(callPos).setTitle(t.title);
+		else
+			menu.removeItem(R.id.menuItemCall);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo)
+				item.getMenuInfo();
+		int selectedItemIndex = info.position;
+		TodoItem selectedItem = adapter.getItem(selectedItemIndex);
+		switch (item.getItemId())
+		{
+			case R.id.menuItemDelete:
+				adapter.remove(selectedItem);
+				break;
+			case R.id.menuItemCall:
+				Intent callIntent = new Intent(Intent.ACTION_DIAL);
+				String tel = selectedItem.title.replace(callTitle, callForIntent);
+			    callIntent.setData(Uri.parse(tel));
+			    startActivity(callIntent);
+				break;
+		}
+		return true;
 	}
 
 	@Override
@@ -64,32 +101,6 @@ public class TodoListManagerActivity extends Activity
     		startActivityForResult(intent, 1337);
     		return true;
     		
-//            // Single menu item is selected do something
-//            EditText tmp = (EditText) findViewById(R.id.edtNewItem);
-//            String strNewItem = (tmp.getText()).toString();
-//            if (strNewItem.length() == 0)
-//            	return true;
-//            
-//    		arrAdapt.add(strNewItem);
-//    		tmp.setText("");
-//            return true;
-
-            /*
-        case R.id.menuItemDelete:
-        	int selectedRow = list.getSelectedItemPosition();
-        	if (selectedRow < 0)
-        		return true;
-        	
-            entries.remove(selectedRow);
-		    TodoListManagerActivity.this.runOnUiThread(new Runnable()
-		    {
-		        public void run() 
-		        {
-		            arrAdapt.notifyDataSetChanged();
-		        }
-		    });
-            return true;
- */
         default:
             return super.onOptionsItemSelected(item);
         }
