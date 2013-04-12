@@ -2,13 +2,13 @@ package il.ac.huji.todolist;
 
 import java.util.List;
 
-import com.parse.FindCallback;
+import org.json.JSONObject;
+
 import com.parse.Parse;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.PushService;
-import com.parse.ParseException;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -22,7 +22,8 @@ public class TodoDAL {
 		dbh = new DatabaseHandler(context);
 		
 		//Parse
-		Parse.initialize(context /*this*/, "fkzwf4i69gpztGkRz5VrbAyCiiNK9LoEYgAgNbwc", "XEx8gRNX6k86JVNegZMTc06qXSRLjfzUpRHIFEbX");
+		Parse.initialize(context, context.getResources().getString(R.string.parseApplication), 
+				context.getResources().getString(R.string.clientKey));
 		PushService.subscribe(context, "", TodoListManagerActivity.class);
 		PushService.setDefaultPushCallback(context, TodoListManagerActivity.class);
 		ParseUser.enableAutomaticUser();
@@ -45,7 +46,10 @@ public class TodoDAL {
 			
 			ParseObject todoObg = new ParseObject("todo");
 			todoObg.put("title", todoItem.getTitle());
-			todoObg.put("due", todoItem.getDueDate().getTime());
+			if (todoItem.getDueDate() != null)
+				todoObg.put("due", todoItem.getDueDate().getTime());
+			else
+				todoObg.put("due", JSONObject.NULL);
 			todoObg.saveInBackground();
 		}
 		catch (Exception e) 
@@ -70,20 +74,17 @@ public class TodoDAL {
 			
 			ParseQuery query = new ParseQuery("todo");
 			query.whereEqualTo("title", todoItem.getTitle());
-			query.findInBackground(new FindCallback() {
-				public void done(List<ParseObject> todoList, ParseException e) {
-					if (e == null) {
-						for(int i=0; i< todoList.size(); i++)
-						{
-							ParseObject parseObj = todoList.get(i);
-							parseObj.put("due", finalTodoItem.getDueDate().getTime());
-							parseObj.saveInBackground();
-						}
-					} 
-
-				}
-			});
-
+			
+			List<ParseObject> test = query.find();
+		    for(int x = 0; x < test.size(); x++)
+		    {
+		    	ParseObject parseObj = test.get(x);
+		    	if (finalTodoItem.getDueDate() != null)
+		    		parseObj.put("due", finalTodoItem.getDueDate().getTime());
+		    	else
+		    		parseObj.put("due", JSONObject.NULL);
+				parseObj.saveInBackground();
+		    }
 		}
 		catch (Exception e) 
 		{
@@ -105,7 +106,10 @@ public class TodoDAL {
 			
 			ParseQuery query = new ParseQuery("todo");
 			query.whereEqualTo("title", todoItem.getTitle());
-			query.whereEqualTo("due", todoItem.getDueDate().getTime());
+			if (todoItem.getDueDate() != null)
+				query.whereEqualTo("due", todoItem.getDueDate().getTime());
+	    	else
+	    		query.whereEqualTo("due", JSONObject.NULL);
 			List<ParseObject> test = query.find();
 		    for(int x = 0; x < test.size(); x++)
 		    {

@@ -20,7 +20,7 @@ public class TodoListManagerActivity extends Activity
 {
 	Cursor cursor;
 	private TodoListCursorAdapter adapter;
-	private TodoDAL  dal;
+	private TodoDAL dal;
 	
 	ListView list;
 	private int callPos = 1;
@@ -64,7 +64,8 @@ public class TodoListManagerActivity extends Activity
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo)item.getMenuInfo();
 		int selectedItemIndex = info.position;
 		cursor.moveToPosition(selectedItemIndex);
-		TodoItem selectedItem = new TodoItem(cursor.getString(1), new Date(cursor.getLong(2)));
+		String isDateNull = cursor.getString(2);
+		TodoItem selectedItem = new TodoItem(cursor.getString(1), (isDateNull != null) ? new Date(cursor.getLong(2)) : null);
 		
 		switch (item.getItemId())
 		{

@@ -60,7 +60,10 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		
 		ContentValues values = new ContentValues();
 		values.put(KEY_TITLE, item.getTitle());
-		values.put(KEY_DUE, item.getDueDate().getTime());
+		if (item.getDueDate() != null)
+			values.put(KEY_DUE, item.getDueDate().getTime());
+		else
+			values.putNull(KEY_DUE);
 		
 	    // Inserting Row
 	    long result = db.insert(TABLE_NAME, null, values);
@@ -79,7 +82,8 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	    if (cursor != null)
 	        cursor.moveToFirst();
 	    
-	    TodoItem item = new TodoItem(cursor.getString(1), new Date(cursor.getLong(2)));
+	    String isDateNull = cursor.getString(2);
+        TodoItem item = new TodoItem(cursor.getString(1), (isDateNull != null) ? new Date(cursor.getLong(2)) : null);
 	    return item;
 	}
 	 
@@ -97,7 +101,8 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	    if (cursor.moveToFirst()) {
 	        do 
 	        {
-	            TodoItem item = new TodoItem(cursor.getString(1), new Date(cursor.getLong(2)));
+	        	String isDateNull = cursor.getString(2);
+	            TodoItem item = new TodoItem(cursor.getString(1), (isDateNull != null) ? new Date(cursor.getLong(2)) : null);
 	            // Adding contact to list
 	            allItems.add(item);
 	        }
@@ -114,7 +119,10 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		 
 		ContentValues values = new ContentValues();
 		values.put(KEY_TITLE, item.getTitle());
-		values.put(KEY_DUE, item.getDueDate().getTime());
+		if (item.getDueDate() != null)
+			values.put(KEY_DUE, item.getDueDate().getTime());
+		else
+			values.putNull(KEY_DUE);
 	 
 	    // updating row
 	    return (db.update(TABLE_NAME, values, KEY_TITLE + " = ?", new String[] { item.getTitle() }) > 0);

@@ -33,7 +33,9 @@ public class TodoListCursorAdapter extends SimpleCursorAdapter{
 
 		Cursor cursor = (Cursor)getItem(position);
 		cursor.moveToPosition(position);
-		TodoItem item = new TodoItem(cursor.getString(1), new Date(cursor.getLong(2)));
+		
+		String isDateNull = cursor.getString(2);
+		TodoItem item = new TodoItem(cursor.getString(1), (isDateNull != null) ? new Date(cursor.getLong(2)) : null);
 		
 		TextView txtItem = (TextView)view.findViewById(R.id.txtTodoTitle);
 		TextView txtDate = (TextView)view.findViewById(R.id.txtTodoDueDate);
