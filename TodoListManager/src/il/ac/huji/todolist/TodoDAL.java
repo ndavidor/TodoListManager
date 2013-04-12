@@ -16,6 +16,12 @@ import android.database.Cursor;
 public class TodoDAL {
 	private DatabaseHandler dbh;
 	
+	// Contacts Table Columns names
+	private static final String TABLE_NAME = "todo";
+    private static final String KEY_ID = "_id";
+    private static final String KEY_TITLE = "title";
+    private static final String KEY_DUE = "due";
+	
 	public TodoDAL(Context context) 
 	{ 
 		//DB
@@ -31,7 +37,7 @@ public class TodoDAL {
 	
 	Cursor getCursor()
 	{
-		return dbh.getReadableDatabase().query("todo", new String[] { "_id", "title", "due" }, null, null, null, null, null);
+		return dbh.getReadableDatabase().query(TABLE_NAME, new String[] { KEY_ID, KEY_TITLE, KEY_DUE }, null, null, null, null, null);
 	}
 	
 	public boolean insert(ITodoItem todoItem)
@@ -44,12 +50,12 @@ public class TodoDAL {
 			if (!dbh.addItem(todoItem))
 				return false;
 			
-			ParseObject todoObg = new ParseObject("todo");
-			todoObg.put("title", todoItem.getTitle());
+			ParseObject todoObg = new ParseObject(TABLE_NAME);
+			todoObg.put(KEY_TITLE, todoItem.getTitle());
 			if (todoItem.getDueDate() != null)
-				todoObg.put("due", todoItem.getDueDate().getTime());
+				todoObg.put(KEY_DUE, todoItem.getDueDate().getTime());
 			else
-				todoObg.put("due", JSONObject.NULL);
+				todoObg.put(KEY_DUE, JSONObject.NULL);
 			todoObg.saveInBackground();
 		}
 		catch (Exception e) 
@@ -72,17 +78,17 @@ public class TodoDAL {
 			
 			final ITodoItem finalTodoItem = todoItem;
 			
-			ParseQuery query = new ParseQuery("todo");
-			query.whereEqualTo("title", todoItem.getTitle());
+			ParseQuery query = new ParseQuery(TABLE_NAME);
+			query.whereEqualTo(KEY_TITLE, todoItem.getTitle());
 			
 			List<ParseObject> test = query.find();
 		    for(int x = 0; x < test.size(); x++)
 		    {
 		    	ParseObject parseObj = test.get(x);
 		    	if (finalTodoItem.getDueDate() != null)
-		    		parseObj.put("due", finalTodoItem.getDueDate().getTime());
+		    		parseObj.put(KEY_DUE, finalTodoItem.getDueDate().getTime());
 		    	else
-		    		parseObj.put("due", JSONObject.NULL);
+		    		parseObj.put(KEY_DUE, JSONObject.NULL);
 				parseObj.saveInBackground();
 		    }
 		}
@@ -104,12 +110,12 @@ public class TodoDAL {
 			if (!dbh.deleteItem(todoItem))
 				return false;
 			
-			ParseQuery query = new ParseQuery("todo");
-			query.whereEqualTo("title", todoItem.getTitle());
+			ParseQuery query = new ParseQuery(TABLE_NAME);
+			query.whereEqualTo(KEY_TITLE, todoItem.getTitle());
 			if (todoItem.getDueDate() != null)
-				query.whereEqualTo("due", todoItem.getDueDate().getTime());
+				query.whereEqualTo(KEY_DUE, todoItem.getDueDate().getTime());
 	    	else
-	    		query.whereEqualTo("due", JSONObject.NULL);
+	    		query.whereEqualTo(KEY_DUE, JSONObject.NULL);
 			List<ParseObject> test = query.find();
 		    for(int x = 0; x < test.size(); x++)
 		    {
