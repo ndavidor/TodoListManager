@@ -9,8 +9,8 @@ public class TodoItem implements ITodoItem {
 		this.dueDate = dueDate;
 	}
 	
-	public String title;
-	public Date dueDate;
+	private String title;
+	private Date dueDate;
 	
 	@Override
 	public String getTitle() {

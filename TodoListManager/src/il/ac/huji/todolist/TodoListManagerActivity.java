@@ -75,7 +75,7 @@ public class TodoListManagerActivity extends Activity
 				break;
 			case R.id.menuItemCall:
 				Intent callIntent = new Intent(Intent.ACTION_DIAL);
-				String tel = selectedItem.title.replace(callTitle, callForIntent);
+				String tel = selectedItem.getTitle().replace(callTitle, callForIntent);
 			    callIntent.setData(Uri.parse(tel));
 			    startActivity(callIntent);
 				break;

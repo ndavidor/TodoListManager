@@ -27,17 +27,17 @@ public class TodoItemsDisplayAdapter extends ArrayAdapter<TodoItem> {
 		View view = inflater.inflate(R.layout.row, null);
 		TextView txtItem = (TextView)view.findViewById(R.id.txtTodoTitle);
 		TextView txtDate = (TextView)view.findViewById(R.id.txtTodoDueDate);
-		txtItem.setText(item.title);
-		if (item.dueDate == null)
+		txtItem.setText(item.getTitle());
+		if (item.getDueDate() == null)
 		{
 			txtDate.setText("No due date");
 		}
 		else
 		{
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-			txtDate.setText(dateFormat.format(item.dueDate));
+			txtDate.setText(dateFormat.format(item.getDueDate()));
 			Date currentDate = new Date(System.currentTimeMillis());
-			if (currentDate.after(item.dueDate))
+			if (currentDate.after(item.getDueDate()))
 			{
 				txtDate.setTextColor(Color.RED);
 				txtItem.setTextColor(Color.RED);
